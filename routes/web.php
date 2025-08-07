@@ -10,6 +10,7 @@ use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SupplierController;
 
 // Route::get('/', [DashboardController::class, 'index']);
 
@@ -33,7 +34,8 @@ use App\Http\Controllers\UserController;
     Route::get('stockopname', [StockOpnameController::class, 'index'])->name('stockopname.index');
     Route::post('stockopname', [StockOpnameController::class, 'update'])->name('stockopname.update');
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::resource('users', UserController::class); // opsional
+    Route::resource('users', UserController::class);
+    Route::resource('users', SupplierController::class);
 
 // });
 

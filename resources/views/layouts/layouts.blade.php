@@ -170,11 +170,12 @@
                             x-transition
                             class="absolute bg-white text-black mt-2 rounded shadow-md w-48 z-50"
                         >
-                            <a href="{{ route('users.index') }}"
-                                class="block px-4 py-2 hover:bg-gray-100 {{ request()->routeIs('users.*') ? 'bg-gray-200 font-semibold' : '' }}">
+                            <a href="{{ route('users.index') }}" class="block px-4 py-2 hover:bg-gray-100">
                                 Data User
                             </a>
-                            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Data Supplier</a>
+                            <a href="{{ route('suppliers.index') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                Data Supplier
+                            </a>
                             <a href="#" class="block px-4 py-2 hover:bg-gray-100">Data Jenis Barang</a>
                             <a href="#" class="block px-4 py-2 hover:bg-gray-100">Data Barang</a>
                         </div>
