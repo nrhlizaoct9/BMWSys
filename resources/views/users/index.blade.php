@@ -1,0 +1,81 @@
+@extends('layouts.layouts')
+
+@section('title', 'Data User')
+
+@section('content')
+<div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Manajemen User</h1>
+        <a href="{{ route('users.create') }}" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+            + Tambah User
+        </a>
+    </div>
+
+    @if(session('success'))
+        <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <div class="overflow-x-auto bg-white shadow-md rounded">
+        <div class="bg-white p-6 rounded-lg shadow">
+            <table id="myTable" class="min-w-full divide-y divide-gray-200 text-sm text-gray-800 table-auto border border-gray-200 shadow-sm rounded-lg">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-6 py-3 text-left">No</th>
+                        <th class="px-6 py-3 text-left">Nama</th>
+                        <th class="px-6 py-3 text-left">Email</th>
+                        <th class="px-6 py-3 text-left">Role</th>
+                        <th class="px-6 py-3 text-left">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @forelse($users as $user)
+                        <tr>
+                            <td class="px-6 py-4">{{ $loop->iteration }}</td>
+                            <td class="px-6 py-4">{{ $user->nama }}</td>
+                            <td class="px-6 py-4">{{ $user->email }}</td>
+                            <td class="px-6 py-4 capitalize">{{ $user->role }}</td>
+                            <td class="px-6 py-4 space-x-2">
+                                <a href="{{ route('users.edit', $user->id) }}" class="text-blue-600 hover:underline">Edit</a>
+                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" onclick="return confirm('Yakin ingin menghapus user ini?')" class="text-red-600 hover:underline">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada data user.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+    $(document).ready(function () {
+        $('#myTable').DataTable({
+            responsive: true,
+            language: {
+                search: "Cari:",
+                lengthMenu: "Tampilkan _MENU_ data per halaman",
+                info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                paginate: {
+                    previous: "← Sebelumnya",
+                    next: "Berikutnya →"
+                },
+                zeroRecords: "Tidak ditemukan data yang cocok",
+            }
+        });
+    });
+</script>
+@endsection
+
