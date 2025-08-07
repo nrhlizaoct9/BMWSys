@@ -11,11 +11,11 @@
         </a>
     </div>
 
-    @if(session('success'))
+    {{-- @if(session('success'))
         <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
             {{ session('success') }}
         </div>
-    @endif
+    @endif --}}
 
     <div class="overflow-x-auto bg-white shadow-md rounded">
         <div class="bg-white p-6 rounded-lg shadow">

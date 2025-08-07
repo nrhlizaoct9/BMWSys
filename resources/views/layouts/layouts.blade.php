@@ -140,6 +140,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/alpinejs" defer></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <!-- DataTables + TailwindCSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.tailwind.min.css">
@@ -282,5 +283,35 @@
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.tailwind.min.js"></script>
 
     @yield('scripts') <!-- Untuk inject script di halaman tertentu -->
+
+    <div
+        x-data="{ show: false, message: '', type: 'success' }"
+        x-init="
+            @if(session('success'))
+                show = true;
+                message = '{{ session('success') }}';
+                type = 'success';
+                setTimeout(() => show = false, 3000);
+            @elseif($errors->any())
+                show = true;
+                message = '{{ $errors->first() }}';
+                type = 'error';
+                setTimeout(() => show = false, 4000);
+            @endif
+        "
+        x-show="show"
+        x-transition
+        class="fixed top-32 left-1/2 -translate-x-1/2 z-50 max-w-md w-full"
+    >
+        <div
+            x-bind:class="{
+                'bg-green-100 border-green-400 text-green-800': type === 'success',
+                'bg-red-100 border-red-400 text-red-800': type === 'error'
+            }"
+            class="border-l-4 p-4 rounded shadow text-center"
+        >
+            <p x-text="message" class="text-sm font-medium"></p>
+        </div>
+    </div>
 </body>
 </html>
