@@ -4,8 +4,7 @@
 
 @section('content')
 <div class="max-w-xl mx-auto py-10 sm:px-6 lg:px-8">
-    <div class="max-w-xl mx-auto py-10 sm:px-6 lg:px-8">
-    <div class="bg-white p-8 rounded-2xl border-[3px] border-black shadow-inner shadow-red-100">
+    <div class="bg-white p-8 rounded-2xl border-[3px] border-black shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] hover:shadow-[0_15px_50px_-15px_rgba(0,0,0,0.25)] transition-shadow duration-300">
         <h1 class="text-2xl font-bold mb-6 text-gray-800 text-center">Tambah User Baru</h1>
 
         <form action="{{ route('users.store') }}" method="POST" class="space-y-6">

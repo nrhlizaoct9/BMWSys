@@ -25,7 +25,7 @@
             oleh BimmerWorks untuk mengelola seluruh proses penjualan dan operasional bengkel secara terpusat dan
             efisien. Sistem ini dirancang untuk membantu admin dan owner dalam memantau aktivitas harian seperti
             pencatatan transaksi pemesanan, pengelolaan stok barang, pelayanan service kendaraan, hingga penyusunan
-            laporan keuangan dan operasional. Dengan sistem ini, semua data terintegrasi dalam satu dashboard yang
+            laporan keuangan dan operasional. Dengan sistem ini, semua data terintegrasi dalam satu sistem yang
             mudah diakses, sehingga mendukung pengambilan keputusan yang cepat, akurat, dan berbasis data. Kehadiran
             sistem ini diharapkan dapat meningkatkan efisiensi kerja, mengurangi kesalahan pencatatan, serta memberikan
             gambaran menyeluruh tentang performa bengkel secara real-time.

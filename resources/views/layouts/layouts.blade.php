@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BimmerWorks - Bengkel Profesional</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <style>
         .card {
@@ -161,7 +162,7 @@
                 <div x-data="{ open: false }" class="relative inline-block">
                     <button @click="open = !open"
                         class="pb-2 border-b-2 focus:outline-none
-                            {{ request()->routeIs('users.*') ? 'border-red-600 text-red-600 font-bold' : 'border-transparent hover:border-gray-300' }}">
+                            {{ request()->routeIs(['users.*', 'suppliers.*', 'jenis-barang.*', 'barang.*']) ? 'border-red-600 text-red-600 font-bold' : 'border-transparent hover:border-gray-300' }}">
                         Data Master ▼
                     </button>
                         <div
@@ -171,9 +172,15 @@
                             class="absolute bg-white text-black mt-2 rounded shadow-md w-48 z-50"
                         >
                             <a href="{{ route('users.index') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                @if(request()->routeIs('users.*'))
+                                    <span class="w-2 h-2 bg-red-600 rounded-full inline-block mr-2"></span>
+                                @endif
                                 Data User
                             </a>
                             <a href="{{ route('suppliers.index') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                @if(request()->routeIs('suppliers.*'))
+                                    <span class="w-2 h-2 bg-red-600 rounded-full inline-block mr-2"></span>
+                                @endif
                                 Data Supplier
                             </a>
                             <a href="#" class="block px-4 py-2 hover:bg-gray-100">Data Jenis Barang</a>
