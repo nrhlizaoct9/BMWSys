@@ -183,7 +183,12 @@
                                 @endif
                                 Data Supplier
                             </a>
-                            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Data Jenis Barang</a>
+                            <a href="{{ route('jenis-barang.index') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                @if(request()->routeIs('jenis-barang.*'))
+                                    <span class="w-2 h-2 bg-red-600 rounded-full inline-block mr-2"></span>
+                                @endif
+                                Data Jenis Barang
+                            </a>
                             <a href="#" class="block px-4 py-2 hover:bg-gray-100">Data Barang</a>
                         </div>
                     </div>
