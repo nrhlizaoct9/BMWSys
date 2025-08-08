@@ -35,6 +35,11 @@ class Barang extends Model
         return 'Rp ' . number_format($this->harga, 2, ',', '.');
     }
 
+    public function isStokRendah()
+    {
+        return $this->stok <= $this->stok_min;
+    }
+
 
     public function jenisBarang()
     {

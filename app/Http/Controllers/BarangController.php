@@ -10,8 +10,9 @@ class BarangController extends Controller
 {
     public function index()
     {
-        $barangs = Barang::with('jenisBarang')->latest()->get();
-        return view('barangs.index', compact('barangs'));
+        return view('barangs.index', [
+            'barangs' => Barang::with('jenisBarang')->latest()->get()
+        ]);
     }
 
     public function create()
@@ -26,8 +27,9 @@ class BarangController extends Controller
             'nama_barang' => 'required|string|max:255',
             'jenis_barang_id' => 'required|exists:jenis_barangs,id',
             'stok' => 'required|integer|min:0',
+            'stok_min' => 'required|integer|min:0',
             'satuan' => 'required|string|max:20',
-            'harga' => 'nullable|numeric|min:0'
+            'harga' => 'required|numeric|min:0'
         ]);
 
         Barang::create($validated);
@@ -48,6 +50,7 @@ class BarangController extends Controller
             'nama_barang' => 'required|string|max:255',
             'jenis_barang_id' => 'required|exists:jenis_barangs,id',
             'stok' => 'required|integer|min:0',
+            'stok_min' => 'required|integer|min:0',
             'satuan' => 'required|string|max:20',
             'harga' => 'nullable|numeric|min:0'
         ]);

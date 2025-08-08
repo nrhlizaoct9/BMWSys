@@ -18,12 +18,13 @@ return new class extends Migration
         //     $table->decimal('price', 10, 2);
         //     $table->timestamps();
         // });
-        
+
         Schema::create('barangs', function (Blueprint $table) {
             $table->id();
             $table->string('nama_barang');
             $table->foreignId('jenis_barang_id')->constrained('jenis_barangs');
             $table->integer('stok')->default(0);
+            $table->integer('stok_min')->default(10);
             $table->string('satuan');
             $table->decimal('harga', 12, 2)->nullable();
             $table->timestamps();

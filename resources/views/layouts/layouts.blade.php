@@ -137,6 +137,13 @@
                 justify-content: flex-start;
             }
         }
+
+        /* .badge-stok {
+            transition: all 0.3s ease;
+        }
+        .badge-stok:hover {
+            transform: scale(1.05);
+        } */
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

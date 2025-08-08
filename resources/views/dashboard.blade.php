@@ -33,13 +33,20 @@
     </section>
 
     <!-- Notifikasi -->
-    <section class="bg-red-600 text-white py-14">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <h3 class="text-3xl font-bold mb-3">🔔 Pemberitahuan Penting</h3>
-            <p class="mb-6 text-lg">Nanti diisi sama stok barang apa aja yang menipis</p>
-            <a href="#" class="bg-white text-red-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100">Lihat Stok</a>
-        </div>
-    </section>
+    @if($count = App\Models\Barang::whereColumn('stok', '<=', 'stok_min')->count())
+        <section class="bg-red-600 text-white py-14">
+            <div class="max-w-7xl mx-auto px-6 text-center">
+                <h3 class="text-3xl font-bold mb-3">
+                    {{-- <i class="fas fa-exclamation-triangle text-yellow-500"></i> --}}
+                    ⚠️ Peringatan Stok
+                </h3>
+                <p class="mb-6 text-lg">Ada {{ $count }} barang mencapai batas minimum stok</p>
+                <a href="{{ route('barangs.index') }}" class="bg-white text-red-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100">
+                    Cek Sekarang
+                </a>
+            </div>
+        </section>
+    @endif
 
     <!-- Data Operasional -->
     <section class="bg-gray-100 py-16">
