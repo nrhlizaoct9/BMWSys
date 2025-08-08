@@ -7,6 +7,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\JenisBarangController;
 
 // Route::get('/', [DashboardController::class, 'index']);
 
@@ -26,6 +27,7 @@ use App\Http\Controllers\SupplierController;
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
     Route::resource('users', UserController::class);
     Route::resource('suppliers', SupplierController::class);
+    Route::resource('jenis-barang', JenisBarangController::class);
 
 // });
 
