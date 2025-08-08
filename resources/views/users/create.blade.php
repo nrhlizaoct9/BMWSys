@@ -5,7 +5,8 @@
 @section('content')
 <div class="max-w-xl mx-auto py-10 sm:px-6 lg:px-8">
     <div class="bg-white p-8 rounded-2xl border-[3px] border-black shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] hover:shadow-[0_15px_50px_-15px_rgba(0,0,0,0.25)] transition-shadow duration-300">
-        <h1 class="text-2xl font-bold mb-6 text-gray-800 text-center">Tambah User Baru</h1>
+        <h1 class="text-2xl font-bold mb-6 text-gray-800 text-center">
+            <i class="fas fa-users-cog" style="color: #f7b48b;"></i> Tambah User Baru</h1>
 
         <form action="{{ route('users.store') }}" method="POST" class="space-y-6">
             @csrf
@@ -14,7 +15,7 @@
             <div>
                 <label for="nama" class="block text-sm font-medium text-gray-700">Nama</label>
                 <input type="text" name="nama" id="nama" value="{{ old('nama') }}"
-                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 pl-2"
+                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"
                     required>
                 @error('nama')
                     <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
@@ -25,7 +26,7 @@
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                 <input type="email" name="email" id="email" value="{{ old('email') }}"
-                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 pl-2"
+                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"
                     required>
                 @error('email')
                     <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
@@ -37,7 +38,7 @@
                 <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
                 <div class="relative">
                     <input :type="show ? 'text' : 'password'" name="password" id="password"
-                        class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 pl-2 pr-10"
+                        class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"
                         required>
                     <div class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" @click="show = !show">
                         <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none"
@@ -66,7 +67,7 @@
                 <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Konfirmasi Password</label>
                 <div class="relative">
                     <input :type="show ? 'text' : 'password'" name="password_confirmation" id="password_confirmation"
-                        class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 pl-2 pr-10"
+                        class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"
                         required>
                     <div class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" @click="show = !show">
                         <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none"
@@ -91,7 +92,7 @@
             <div>
                 <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
                 <select name="role" id="role"
-                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 pl-2"
+                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"
                     required>
                     <option value="">-- Pilih Role --</option>
                     <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
