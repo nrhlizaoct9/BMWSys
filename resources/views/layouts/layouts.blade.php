@@ -162,7 +162,7 @@
                 <div x-data="{ open: false }" class="relative inline-block">
                     <button @click="open = !open"
                         class="pb-2 border-b-2 focus:outline-none
-                            {{ request()->routeIs(['users.*', 'suppliers.*', 'jenis-barang.*', 'barang.*']) ? 'border-red-600 text-red-600 font-bold' : 'border-transparent hover:border-gray-300' }}">
+                            {{ request()->routeIs(['users.*', 'suppliers.*', 'jenis-barang.*', 'barangs.*']) ? 'border-red-600 text-red-600 font-bold' : 'border-transparent hover:border-gray-300' }}">
                         Data Master ▼
                     </button>
                         <div
@@ -189,7 +189,12 @@
                                 @endif
                                 Data Jenis Barang
                             </a>
-                            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Data Barang</a>
+                            <a href="{{ route('barangs.index') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                @if(request()->routeIs('barangs.*'))
+                                    <span class="w-2 h-2 bg-red-600 rounded-full inline-block mr-2"></span>
+                                @endif
+                                Data Stok Barang
+                            </a>
                         </div>
                     </div>
 

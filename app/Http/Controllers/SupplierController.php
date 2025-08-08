@@ -9,9 +9,6 @@ use App\Models\Supplier;
 
 class SupplierController extends Controller
 {
-    /**
-     * Menampilkan semua user.
-     */
     public function index()
     {
         $suppliers = Supplier::latest()->get();
