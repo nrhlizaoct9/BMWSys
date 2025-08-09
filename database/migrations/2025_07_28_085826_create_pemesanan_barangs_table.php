@@ -25,8 +25,9 @@ return new class extends Migration
         Schema::create('pemesanan_barangs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('supplier_id')->constrained();
-            $table->date('tanggal');
-            $table->string('nomor_invoice')->unique();
+            $table->date('tanggal_datang'); // ganti dari 'tanggal'
+            $table->string('nomor_surat_jalan')->unique(); // ganti dari 'nomor_invoice'
+            $table->string('status')->default('arrived'); // hanya status arrived
             $table->timestamps();
         });
 

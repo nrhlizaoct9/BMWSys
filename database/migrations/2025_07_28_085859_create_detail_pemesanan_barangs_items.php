@@ -26,8 +26,7 @@ return new class extends Migration
             $table->foreignId('pemesanan_barang_id')->constrained()->cascadeOnDelete();
             $table->foreignId('barang_id')->constrained()->cascadeOnDelete();
             $table->integer('quantity');
-            $table->decimal('harga_satuan', 12, 2);
-            $table->decimal('subtotal', 12, 2);
+            $table->decimal('harga_beli', 12, 2); // ganti dari harga_satuan
             $table->timestamps();
         });
     }

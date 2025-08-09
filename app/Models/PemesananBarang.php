@@ -16,9 +16,9 @@ class PemesananBarang extends Model
 
     protected $fillable = [
         'supplier_id',
-        'tanggal',
-        'nomor_invoice',
-        'status',
+        'tanggal_datang',
+        'nomor_surat_jalan',
+        'status' => 'arrived',
     ];
 
     protected $casts = [
