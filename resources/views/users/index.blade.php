@@ -8,7 +8,7 @@
     <div class="bg-white border-l-4 border-red-600 shadow-[0_0_35px_rgba(0,0,0,0.25)] rounded-lg p-6">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-extrabold text-gray-800 border-b-2 border-red-600 pb-2">
-                <i class="fas fa-users-cog" style="color: #f5d0b9;"></i> Manajemen User
+                <i class="fas fa-users-cog" style="color: #f3b38b;"></i> Manajemen User
             </h1>
             <a href="{{ route('users.create') }}" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 font-semibold shadow">
                 <i class="fas fa-plus"></i> Tambah User

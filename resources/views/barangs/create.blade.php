@@ -12,6 +12,18 @@
         <form action="{{ route('barangs.store') }}" method="POST" class="space-y-6">
             @csrf
 
+            {{-- Kode Barang (Auto-generated) --}}
+            <div>
+                <label for="kode_barang" class="block text-sm font-medium text-gray-700">Kode Barang</label>
+                <input type="text" name="kode_barang" id="kode_barang" value="{{ old('kode_barang') }}"
+                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2 bg-gray-100"
+                    readonly>
+                <small class="text-gray-500">Kode akan digenerate otomatis</small>
+                @error('kode_barang')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
             {{-- Nama Barang --}}
             <div>
                 <label for="nama_barang" class="block text-sm font-medium text-gray-700">Nama Barang</label>
@@ -55,8 +67,7 @@
             {{-- Stok min --}}
             <div>
                 <label for="stok_min" class="block text-sm font-medium text-gray-700">Stok Minimum</label>
-                <input type="number" name="stok_min" id="stok_min"
-                    value="{{ old('stok_min', $barang->stok_min ?? 10) }}"
+                <input type="number" name="stok_min" id="stok_min" value="{{ old('stok_min', 10) }}"
                     class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"
                     min="0" required>
                 @error('stok_min')
@@ -75,13 +86,24 @@
                 @enderror
             </div>
 
-            {{-- Harga --}}
+            {{-- Harga Beli --}}
             <div>
-                <label for="harga" class="block text-sm font-medium text-gray-700">Harga (Rp)</label>
-                <input type="text" name="harga" id="harga" value="{{ old('harga') }}"
+                <label for="harga_beli" class="block text-sm font-medium text-gray-700">Harga Beli (Rp)</label>
+                <input type="text" name="harga_beli" id="harga_beli" value="{{ old('harga_beli') }}"
                     class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"
-                    min="0">
-                @error('harga')
+                    required>
+                @error('harga_beli')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Harga Jual --}}
+            <div>
+                <label for="harga_jual" class="block text-sm font-medium text-gray-700">Harga Jual (Rp)</label>
+                <input type="text" name="harga_jual" id="harga_jual" value="{{ old('harga_jual') }}"
+                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"
+                    required>
+                @error('harga_jual')
                     <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                 @enderror
             </div>
@@ -93,7 +115,7 @@
                 </a>
                 <button type="submit"
                         class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 font-semibold transition">
-                    Simpan
+                    <i class="fas fa-save mr-1"></i> Simpan
                 </button>
             </div>
         </form>
@@ -103,23 +125,46 @@
 
 @section('scripts')
 <script>
-    // Format input harga
-    document.getElementById('harga').addEventListener('input', function(e) {
-        // Hilangkan semua karakter non-digit
-        let value = this.value.replace(/\D/g, '');
+    // Generate kode barang otomatis saat memilih jenis barang
+    document.getElementById('jenis_barang_id').addEventListener('change', async function() {
+        try {
+            const response = await fetch(`/api/generate-kode-barang?jenis_barang_id=${this.value}`);
+            const data = await response.json();
 
-        // Format ke Rupiah (opsional)
-        if(value.length > 0) {
-            value = parseInt(value, 10).toLocaleString('id-ID');
+            if (data.success) {
+                document.getElementById('kode_barang').value = data.kode_barang;
+            } else {
+                console.error('Error:', data.message);
+                alert('Gagal generate kode barang');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat generate kode');
         }
-
-        this.value = value;
     });
+
+    // Format input harga
+    function formatRupiah(input) {
+        input.addEventListener('input', function(e) {
+            let value = this.value.replace(/\D/g, '');
+            if(value.length > 0) {
+                value = parseInt(value, 10).toLocaleString('id-ID');
+            }
+            this.value = value;
+        });
+    }
+
+    // Terapkan format ke semua input harga
+    formatRupiah(document.getElementById('harga_beli'));
+    formatRupiah(document.getElementById('harga_jual'));
 
     // Untuk submit form, angka akan dikonversi kembali ke format database
     document.querySelector('form').addEventListener('submit', function(e) {
-        const hargaInput = document.getElementById('harga');
-        hargaInput.value = hargaInput.value.replace(/\./g, '');
+        const hargaBeliInput = document.getElementById('harga_beli');
+        const hargaJualInput = document.getElementById('harga_jual');
+
+        hargaBeliInput.value = hargaBeliInput.value.replace(/\./g, '');
+        hargaJualInput.value = hargaJualInput.value.replace(/\./g, '');
     });
 </script>
 @endsection

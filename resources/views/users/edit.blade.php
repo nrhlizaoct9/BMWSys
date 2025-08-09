@@ -6,7 +6,7 @@
 <div class="max-w-xl mx-auto py-10 sm:px-6 lg:px-8">
     <div class="bg-white p-8 rounded-2xl border-[3px] border-black shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] hover:shadow-[0_15px_50px_-15px_rgba(0,0,0,0.25)] transition-shadow duration-300">
         <h1 class="text-2xl font-bold mb-6 text-gray-800 text-center">
-            <i class="fas fa-users-cog" style="color: #f7b48b;"></i> Edit User</h1>
+            <i class="fas fa-users-cog" style="color: #f3b38b;"></i> Edit User</h1>
 
         <form action="{{ route('users.update', $user->id) }}" method="POST" class="space-y-6">
             @csrf
@@ -30,6 +30,16 @@
                     class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"
                     required>
                 @error('email')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Telepon --}}
+            <div>
+                <label for="telepon" class="block text-sm font-medium text-gray-700">No. Telepon</label>
+                <input type="text" name="telepon" id="telepon" value="{{ old('telepon', $users->telepon) }}"
+                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2">
+                @error('telepon')
                     <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                 @enderror
             </div>
@@ -110,7 +120,7 @@
                 </a>
                 <button type="submit"
                         class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 font-semibold">
-                    Simpan Perubahan
+                    <i class="fas fa-save mr-1"></i> Simpan Perubahan
                 </button>
             </div>
         </form>

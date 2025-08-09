@@ -36,7 +36,7 @@
             {{-- Telepon --}}
             <div>
                 <label for="telepon" class="block text-sm font-medium text-gray-700">No. Telepon</label>
-                <input type="text" name="telepon" id="telepon" value="{{ old('telepon') }}"
+                <input type="text" name="telepon" id="telepon" placeholder="Contoh: 089567123432" value="{{ old('telepon') }}"
                     class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2">
                 @error('telepon')
                     <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
@@ -50,7 +50,7 @@
                 </a>
                 <button type="submit"
                         class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 font-semibold">
-                    Simpan
+                    <i class="fas fa-save mr-1"></i> Simpan
                 </button>
             </div>
         </form>

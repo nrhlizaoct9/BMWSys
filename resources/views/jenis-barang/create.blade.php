@@ -30,7 +30,7 @@
                 </a>
                 <button type="submit"
                         class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 font-semibold transition">
-                    Simpan
+                    <i class="fas fa-save mr-1"></i> Simpan
                 </button>
             </div>
         </form>
