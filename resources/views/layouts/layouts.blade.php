@@ -205,7 +205,7 @@
                         </div>
                     </div>
 
-                <a href="#" class="pb-2 border-b-2 {{ request()->is('pemesanan*') ? 'border-red-600 text-red-600 font-bold' : 'border-transparent hover:border-gray-300' }}">
+                <a href="{{ route('pemesanans.index') }}" class="pb-2 border-b-2 {{ request()->is('pemesanan*') ? 'border-red-600 text-red-600 font-bold' : 'border-transparent hover:border-gray-300' }}">
                     Pemesanan
                 </a>
                 <a href="#" class="pb-2 border-b-2 {{ request()->is('pelayanan*') ? 'border-red-600 text-red-600 font-bold' : 'border-transparent hover:border-gray-300' }}">
