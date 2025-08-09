@@ -17,7 +17,7 @@ class DetailPemesananBarang extends Model
         'pemesanan_barang_id',
         'barang_id',
         'quantity',
-        'harga_satuan',
+        'harga_beli',
         'subtotal',
     ];
 
@@ -39,8 +39,12 @@ class DetailPemesananBarang extends Model
     // Auto calculate subtotal
     protected static function booted()
     {
-        static::saving(function ($model) {
-            $model->subtotal = $model->quantity * $model->harga_satuan;
+        static::creating(function ($model) {
+            $model->subtotal = $model->quantity * $model->harga_beli;
+        });
+
+        static::updating(function ($model) {
+            $model->subtotal = $model->quantity * $model->harga_beli;
         });
     }
 }

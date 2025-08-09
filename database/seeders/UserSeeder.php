@@ -14,13 +14,15 @@ class UserSeeder extends Seeder
             'nama' => 'Admin',
             'email' => 'admin@gmail.com',
             'password' => Hash::make('admin123'),
+            'telepon' => '0895701175432',
             'role' => 'admin',
         ]);
 
         User::create([
-            'nama' => 'owner',
+            'nama' => 'Owner',
             'email' => 'owner@gmail.com',
             'password' => Hash::make('owner123'),
+            'telepon' => '0895701175433',
             'role' => 'owner',
         ]);
     }

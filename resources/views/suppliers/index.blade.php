@@ -33,12 +33,12 @@
                         <td class="px-6 py-4">{{ $supplier->alamat }}</td>
                         <td class="px-6 py-4">{{ $supplier->telepon }}</td>
                         <td class="px-6 py-4 space-x-2">
-                            <a href="{{ route('suppliers.edit', $supplier->id) }}" class="text-blue-600 hover:underline font-medium">Edit</a>
+                            <a href="{{ route('suppliers.edit', $supplier->id) }}" class="text-blue-600 hover:underline font-medium"><i class="fas fa-edit"></i> Edit</a>
                             <form action="{{ route('suppliers.destroy', $supplier->id) }}" method="POST" class="inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" onclick="return confirm('Yakin ingin menghapus supplier ini?')" class="text-red-600 hover:underline font-medium">
-                                    Hapus
+                                    <i class="fas fa-trash"></i> Hapus
                                 </button>
                             </form>
                         </td>

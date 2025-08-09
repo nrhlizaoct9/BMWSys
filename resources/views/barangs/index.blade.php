@@ -24,8 +24,8 @@
                     <th class="px-6 py-3 text-left">Stok</th>
                     <th class="px-6 py-3 text-left">Stok Min.</th>
                     <th class="px-6 py-3 text-left">Satuan</th>
-                    <th class="px-6 py-3 text-left">Harga Beli</th>
-                    <th class="px-6 py-3 text-left">Harga Jual</th>
+                    <th class="px-6 py-3 text-left">Harga Beli (per satuan)</th>
+                    <th class="px-6 py-3 text-left">Harga Jual (per satuan)</th>
                     <th class="px-6 py-3 text-left">Aksi</th>
                 </tr>
             </thead>
@@ -52,12 +52,12 @@
                         <td class="px-6 py-4">{{ $barang->harga_beli_formatted }}</td>
                         <td class="px-6 py-4">{{ $barang->harga_jual_formatted }}</td>
                         <td class="px-6 py-4 space-x-2">
-                            <a href="{{ route('barangs.edit', $barang->id) }}" class="text-blue-600 hover:underline font-medium">Edit</a>
+                            <a href="{{ route('barangs.edit', $barang->id) }}" class="text-blue-600 hover:underline font-medium"><i class="fas fa-edit"></i> Edit</a>
                             <form action="{{ route('barangs.destroy', $barang->id) }}" method="POST" class="inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" onclick="return confirm('Yakin ingin menghapus barang ini?')" class="text-red-600 hover:underline font-medium">
-                                    Hapus
+                                    <i class="fas fa-trash"></i> Hapus
                                 </button>
                             </form>
                         </td>

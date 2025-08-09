@@ -27,6 +27,7 @@ return new class extends Migration
             $table->foreignId('barang_id')->constrained()->cascadeOnDelete();
             $table->integer('quantity');
             $table->decimal('harga_beli', 12, 2); // ganti dari harga_satuan
+            $table->decimal('subtotal', 12, 2)->default(0);
             $table->timestamps();
         });
     }
@@ -34,8 +35,10 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('detail_pemesanan_barangs');
+        Schema::table('detail_pemesanan_barangs', function (Blueprint $table) {
+            $table->dropColumn('subtotal');
+        });
     }
 };

@@ -6,6 +6,7 @@ use App\Models\PemesananBarang;
 use App\Models\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Supplier;
 
 class PemesananController extends Controller
 {
@@ -43,11 +44,11 @@ class PemesananController extends Controller
             'items' => 'required|array|min:1',
             'items.*.barang_id' => 'required|exists:barangs,id',
             'items.*.quantity' => 'required|integer|min:1',
-            'items.*.harga_beli' => 'required|numeric|min:0' // ganti dari harga_satuan
+            'items.*.harga_beli' => 'required|numeric|min:0'
         ]);
 
         DB::transaction(function () use ($validated) {
-            // Catat kedatangan barang
+            // Buat data pemesanan
             $pemesanan = PemesananBarang::create([
                 'supplier_id' => $validated['supplier_id'],
                 'nomor_surat_jalan' => $validated['nomor_surat_jalan'],
@@ -55,18 +56,21 @@ class PemesananController extends Controller
                 'status' => 'arrived'
             ]);
 
-            // Simpan detail barang yang datang
+            // Simpan detail pemesanan + hitung subtotal
             foreach ($validated['items'] as $item) {
+                $subtotal = $item['quantity'] * $item['harga_beli'];
+
                 $pemesanan->details()->create([
                     'barang_id' => $item['barang_id'],
                     'quantity' => $item['quantity'],
-                    'harga_beli' => $item['harga_beli']
+                    'harga_beli' => $item['harga_beli'],
+                    'subtotal' => $subtotal
                 ]);
 
                 // Update stok barang
                 $barang = Barang::find($item['barang_id']);
                 $barang->stok += $item['quantity'];
-                $barang->harga_beli = $item['harga_beli']; // Update harga beli terbaru
+                $barang->harga_beli = $item['harga_beli'];
                 $barang->save();
             }
         });

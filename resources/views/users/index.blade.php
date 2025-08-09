@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-    <!-- Ubah div ini untuk shadow di semua sisi -->
     <div class="bg-white border-l-4 border-red-600 shadow-[0_0_35px_rgba(0,0,0,0.25)] rounded-lg p-6">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-extrabold text-gray-800 border-b-2 border-red-600 pb-2">
@@ -15,13 +14,13 @@
             </a>
         </div>
 
-        <!-- Tambahkan shadow lebih tebal di tabel -->
         <table id="myTable" class="min-w-full divide-y divide-gray-200 text-sm text-gray-800 table-auto border border-gray-200 shadow-md rounded-lg">
             <thead class="bg-gray-100">
                 <tr>
                     <th class="px-6 py-3 text-left">No</th>
                     <th class="px-6 py-3 text-left">Nama</th>
                     <th class="px-6 py-3 text-left">Email</th>
+                    <th class="px-6 py-3 text-left">No. Telepon</th>
                     <th class="px-6 py-3 text-left">Role</th>
                     <th class="px-6 py-3 text-left">Aksi</th>
                 </tr>
@@ -32,14 +31,15 @@
                         <td class="px-6 py-4">{{ $loop->iteration }}</td>
                         <td class="px-6 py-4">{{ $user->nama }}</td>
                         <td class="px-6 py-4">{{ $user->email }}</td>
+                        <td class="px-6 py-4">{{ $user->telepon }}</td>
                         <td class="px-6 py-4 capitalize">{{ $user->role }}</td>
                         <td class="px-6 py-4 space-x-2">
-                            <a href="{{ route('users.edit', $user->id) }}" class="text-blue-600 hover:underline font-medium">Edit</a>
+                            <a href="{{ route('users.edit', $user->id) }}" class="text-blue-600 hover:underline font-medium"><i class="fas fa-edit"></i> Edit</a>
                             <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" onclick="return confirm('Yakin ingin menghapus user ini?')" class="text-red-600 hover:underline font-medium">
-                                    Hapus
+                                    <i class="fas fa-trash"></i> Hapus
                                 </button>
                             </form>
                         </td>

@@ -21,8 +21,10 @@ class PemesananBarang extends Model
         'status' => 'arrived',
     ];
 
+    protected $dates = ['tanggal_datang'];
+
     protected $casts = [
-        'tanggal' => 'date',
+        'tanggal_datang' => 'datetime:Y-m-d',
     ];
 
     public function supplier(): BelongsTo
@@ -30,9 +32,9 @@ class PemesananBarang extends Model
         return $this->belongsTo(Supplier::class);
     }
 
-    public function details(): HasMany
+    public function details()
     {
-        return $this->hasMany(DetailPemesananBarang::class, 'pemesanan_barang_id');
+        return $this->hasMany(DetailPemesananBarang::class);
     }
 
     // Generate nomor invoice otomatis

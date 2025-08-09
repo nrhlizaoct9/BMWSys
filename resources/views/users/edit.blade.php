@@ -37,11 +37,11 @@
             {{-- Telepon --}}
             <div>
                 <label for="telepon" class="block text-sm font-medium text-gray-700">No. Telepon</label>
-                <input type="text" name="telepon" id="telepon" value="{{ old('telepon', $users->telepon) }}"
-                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2">
-                @error('telepon')
-                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                @enderror
+                <input type="text" name="telepon" id="telepon" value="{{ old('telepon', $user->telepon) }}"
+                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2" required>
+                    @error('telepon')
+                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
             </div>
 
             {{-- Password Optional --}}

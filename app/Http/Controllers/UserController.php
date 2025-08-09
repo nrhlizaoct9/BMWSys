@@ -24,6 +24,7 @@ class UserController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
+            'telepon' => 'required',
             'password' => 'required|min:6|confirmed',
             'role' => 'required|in:admin,owner',
         ]);
@@ -31,6 +32,7 @@ class UserController extends Controller
         User::create([
             'nama' => $request->nama,
             'email' => $request->email,
+            'telepon' => $request->telepon,
             'password' => Hash::make($request->password),
             'role' => $request->role,
         ]);
@@ -51,6 +53,7 @@ class UserController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
+            'telepon' => 'required|string|max:20',
             'role' => 'required|in:admin,owner',
             'password' => 'nullable|min:6|confirmed',
         ]);
@@ -58,6 +61,7 @@ class UserController extends Controller
         $data = [
             'nama' => $request->nama,
             'email' => $request->email,
+            'telepon' => $request->telepon,
             'role' => $request->role,
         ];
 

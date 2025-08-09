@@ -43,7 +43,7 @@
                 <select name="jenis_barang_id" id="jenis_barang_id"
                     class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"
                     required>
-                    <option value="">Pilih Jenis Barang</option>
+                    <option value="">-- Pilih Jenis Barang --</option>
                     @foreach($jenisBarangs as $jenis)
                         <option value="{{ $jenis->id }}"
                             {{ (old('jenis_barang_id', $barang->jenis_barang_id) == $jenis->id) ? 'selected' : '' }}>
@@ -95,7 +95,7 @@
 
             {{-- Harga Beli --}}
             <div>
-                <label for="harga_beli" class="block text-sm font-medium text-gray-700">Harga Beli (Rp)</label>
+                <label for="harga_beli" class="block text-sm font-medium text-gray-700">Harga Beli per satuan (Rp)</label>
                 <input type="text" name="harga_beli" id="harga_beli"
                     value="{{ old('harga_beli', number_format($barang->harga_beli, 0, ',', '.')) }}"
                     class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"
@@ -107,7 +107,7 @@
 
             {{-- Harga Jual --}}
             <div>
-                <label for="harga_jual" class="block text-sm font-medium text-gray-700">Harga Jual (Rp)</label>
+                <label for="harga_jual" class="block text-sm font-medium text-gray-700">Harga Jual per satuan (Rp)</label>
                 <input type="text" name="harga_jual" id="harga_jual"
                     value="{{ old('harga_jual', number_format($barang->harga_jual, 0, ',', '.')) }}"
                     class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"

@@ -37,7 +37,7 @@
             <div>
                 <label for="telepon" class="block text-sm font-medium text-gray-700">No. Telepon</label>
                 <input type="text" name="telepon" id="telepon" placeholder="Contoh: 089567123432" value="{{ old('telepon') }}"
-                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2">
+                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2" required>
                 @error('telepon')
                     <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                 @enderror

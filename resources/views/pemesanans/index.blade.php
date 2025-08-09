@@ -31,7 +31,7 @@
                         <td class="px-6 py-4">{{ $loop->iteration }}</td>
                         <td class="px-6 py-4 font-mono">{{ $pemesanan->nomor_surat_jalan }}</td>
                         <td class="px-6 py-4">{{ $pemesanan->supplier->nama }}</td>
-                        <td class="px-6 py-4">{{ $pemesanan->tanggal_datang->format('d/m/Y') }}</td>
+                        <td class="px-6 py-4">{{ $pemesanan->tanggal_datang?->format('d/m/Y') }}</td>
                         <td class="px-6 py-4">
                             <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
                                 {{ $pemesanan->details->sum('quantity') }} item
@@ -76,9 +76,9 @@
                 },
                 zeroRecords: "Tidak ditemukan data yang cocok",
             },
-            columnDefs: [
-                { orderable: false, targets: 5 } // Menonaktifkan sorting untuk kolom aksi
-            ]
+            // columnDefs: [
+            //     { orderable: false, targets: 5 } // Menonaktifkan sorting untuk kolom aksi
+            // ]
         });
     });
 </script>
