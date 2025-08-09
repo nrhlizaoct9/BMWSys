@@ -69,9 +69,13 @@ class Barang extends Model
         return $this->stok <= $this->stok_min;
     }
 
-
     public function jenisBarang()
     {
         return $this->belongsTo(JenisBarang::class);
+    }
+
+    public function pemesananDetails(): HasMany
+    {
+        return $this->hasMany(DetailPemesananBarang::class);
     }
 }

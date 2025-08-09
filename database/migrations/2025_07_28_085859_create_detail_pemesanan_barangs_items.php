@@ -11,22 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('transaction_items', function (Blueprint $table) {
+
+        // Schema::create('detail_pemesanan_barangs', function (Blueprint $table) {
         //     $table->id();
-        //     $table->foreignId('transaction_id')->constrained()->onDelete('cascade');
-        //     $table->morphs('itemable'); // itemable_type, itemable_id
-        //     $table->integer('quantity');
-        //     $table->decimal('price', 10, 2);
-        //     $table->decimal('total', 12, 2);
+        //     $table->foreignId('pemesanan_barang_id')->constrained();
+        //     $table->foreignId('barang_id')->constrained();
+        //     $table->integer('jumlah');
+        //     $table->decimal('harga_satuan', 12, 2);
         //     $table->timestamps();
         // });
 
         Schema::create('detail_pemesanan_barangs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pemesanan_barang_id')->constrained();
-            $table->foreignId('barang_id')->constrained();
-            $table->integer('jumlah');
+            $table->foreignId('pemesanan_barang_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('barang_id')->constrained()->cascadeOnDelete();
+            $table->integer('quantity');
             $table->decimal('harga_satuan', 12, 2);
+            $table->decimal('subtotal', 12, 2);
             $table->timestamps();
         });
     }
