@@ -149,7 +149,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/alpinejs" defer></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
+
     <!-- DataTables + TailwindCSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.tailwind.min.css">
 </head>
@@ -209,9 +209,23 @@
                 <a href="{{ route('pemesanans.index') }}" class="pb-2 border-b-2 {{ request()->is('pemesanan*') ? 'border-red-600 text-red-600 font-bold' : 'border-transparent hover:border-gray-300' }}">
                     Pemesanan
                 </a>
-                <a href="#" class="pb-2 border-b-2 {{ request()->is('pelayanan*') ? 'border-red-600 text-red-600 font-bold' : 'border-transparent hover:border-gray-300' }}">
-                    Pelayanan
-                </a>
+                <div x-data="{ open: false }" class="relative inline-block">
+                    <button @click="open = !open"
+                        class="pb-2 border-b-2 focus:outline-none
+                            {{ request()->routeIs(['service_jobs.*']) ? 'border-red-600 text-red-600 font-bold' : 'border-transparent hover:border-gray-300' }}">
+                        Pelayanan ▼
+                    </button>
+                    <div
+                        x-show="open"
+                        @click.away="open = false"
+                        x-transition
+                        class="absolute bg-white text-black mt-2 rounded shadow-md w-48 z-50"
+                    >
+                        <a href="{{ route('service_jobs.index') }}" class="block px-4 py-2 hover:bg-gray-100">
+                            Pricelist Service
+                        </a>
+                    </div>
+                </div>
                 <a href="#" class="pb-2 border-b-2 {{ request()->is('laporan*') ? 'border-red-600 text-red-600 font-bold' : 'border-transparent hover:border-gray-300' }}">
                     Laporan
                 </a>

@@ -10,6 +10,8 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\JenisBarangController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\PemesananController;
+use App\Http\Controllers\ServiceJobController;
+
 
 // Route::get('/', [DashboardController::class, 'index']);
 
@@ -32,6 +34,8 @@ use App\Http\Controllers\PemesananController;
     Route::resource('jenis-barang', JenisBarangController::class);
     Route::resource('barangs', BarangController::class);
     Route::resource('pemesanans', PemesananController::class);
+    Route::resource('service_jobs', ServiceJobController::class);
+
 
 // });
 

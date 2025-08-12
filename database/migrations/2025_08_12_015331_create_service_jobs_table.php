@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('nama_pekerjaan');
             $table->string('estimasi_waktu')->nullable();
-            $table->enum('tipe_harga', ['fixed', 'per_hour'])->default('fixed');
+            $table->enum('tipe_harga', ['tetap', 'per_jam'])->default('tetap');
             $table->decimal('harga_jual', 12, 2);
             $table->decimal('hpp_jasa', 12, 2)->nullable();
+            $table->string('deskripsi')->nullable();
             $table->timestamps();
         });
     }
