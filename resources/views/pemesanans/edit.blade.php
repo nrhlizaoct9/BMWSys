@@ -1,16 +1,17 @@
 @extends('layouts.layouts')
 
-@section('title', 'Input Barang Masuk')
+@section('title', 'Edit Barang Masuk')
 
 @section('content')
 <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
     <div class="bg-white p-8 rounded-2xl border-[3px] border-black shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] hover:shadow-[0_15px_50px_-15px_rgba(0,0,0,0.25)] transition-shadow duration-300">
         <h1 class="text-2xl font-bold mb-12 text-gray-800 text-center">
-            <i class="fas fa-dolly" style="color: #2196F3;"></i> Input Barang Masuk
+            <i class="fas fa-dolly" style="color: #2196F3;"></i> Edit Barang Masuk
         </h1>
 
-        <form action="{{ route('pemesanans.store') }}" method="POST" class="space-y-6">
+        <form action="{{ route('pemesanans.update', $pemesanan->id) }}" method="POST" class="space-y-6">
             @csrf
+            @method('PUT')
 
             <!-- 1. Informasi Utama -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -20,7 +21,7 @@
                     <select name="supplier_id" id="supplier_id" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2" required>
                         <option value="">-- Pilih Supplier --</option>
                         @foreach($suppliers as $supplier)
-                            <option value="{{ $supplier->id }}" {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>
+                            <option value="{{ $supplier->id }}" {{ $pemesanan->supplier_id == $supplier->id ? 'selected' : '' }}>
                                 {{ $supplier->nama }}
                             </option>
                         @endforeach
@@ -30,7 +31,7 @@
                 {{-- Nomor Surat Jalan --}}
                 <div>
                     <label for="nomor_surat_jalan" class="block text-sm font-medium text-gray-700">Nomor Surat Jalan</label>
-                    <input type="text" name="nomor_surat_jalan" id="nomor_surat_jalan" value="{{ old('nomor_surat_jalan') }}"
+                    <input type="text" name="nomor_surat_jalan" id="nomor_surat_jalan" value="{{ old('nomor_surat_jalan', $pemesanan->nomor_surat_jalan) }}"
                         class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"
                         placeholder="Contoh: SJ/2025/001" required>
                 </div>
@@ -38,7 +39,7 @@
                 {{-- Tanggal Datang --}}
                 <div>
                     <label for="tanggal_datang" class="block text-sm font-medium text-gray-700">Tanggal Datang</label>
-                    <input type="date" name="tanggal_datang" id="tanggal_datang" value="{{ old('tanggal_datang', date('Y-m-d')) }}"
+                    <input type="date" name="tanggal_datang" id="tanggal_datang" value="{{ old('tanggal_datang', $pemesanan->tanggal_datang->format('Y-m-d')) }}"
                         class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"
                         required>
                 </div>
@@ -51,29 +52,32 @@
                 </h3>
 
                 <div id="items-container" class="space-y-4">
-                    <!-- Baris Item Pertama -->
+                    @foreach($details as $index => $item)
+                    <!-- Baris Item -->
                     <div class="item-container">
                         <div class="item-row grid grid-cols-1 md:grid-cols-12 gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                             {{-- Barang --}}
                             <div class="md:col-span-3">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Barang</label>
-                                <select name="items[0][barang_id]" class="select-barang w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2 border" required>
-                                    <option value="" selected disabled>Cari barang...</option>
+                                <select name="items[{{ $index }}][barang_id]" class="select-barang w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2 border" required>
+                                    <option value="" disabled>Cari barang...</option>
                                     @foreach($barangs as $barang)
                                         <option value="{{ $barang->id }}"
                                             data-kode="{{ $barang->kode_barang }}"
                                             data-satuan="{{ $barang->satuan }}"
-                                            data-harga="{{ $barang->harga_beli }}">
+                                            data-harga="{{ $barang->harga_beli }}"
+                                            {{ $item->barang_id == $barang->id ? 'selected' : '' }}>
                                             {{ $barang->kode_barang }} - {{ $barang->nama_barang }} ({{ $barang->satuan }})
                                         </option>
                                     @endforeach
                                 </select>
+                                <input type="hidden" name="items[{{ $index }}][id]" value="{{ $item->id }}">
                             </div>
 
                             {{-- Quantity --}}
                             <div class="md:col-span-1">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah</label>
-                                <input type="number" name="items[0][quantity]" min="1" value="1"
+                                <input type="number" name="items[{{ $index }}][quantity]" min="1" value="{{ old('items.'.$index.'.quantity', $item->quantity) }}"
                                     class="quantity w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2 border" required>
                             </div>
 
@@ -82,7 +86,7 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Harga Beli (per satuan)</label>
                                 <div class="relative">
                                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-600">Rp</span>
-                                    <input type="number" name="items[0][harga_beli]" min="0" step="1000"
+                                    <input type="number" name="items[{{ $index }}][harga_beli]" min="0" step="1000" value="{{ old('items.'.$index.'.harga_beli', $item->harga_beli) }}"
                                         class="harga-beli w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2 border pl-10"
                                         required>
                                 </div>
@@ -92,11 +96,11 @@
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Diskon</label>
                                 <div class="flex">
-                                    <input type="number" name="items[0][diskon_nilai]" min="0" value="0"
+                                    <input type="number" name="items[{{ $index }}][diskon_nilai]" min="0" value="{{ old('items.'.$index.'.diskon_nilai', $item->diskon_nilai) }}"
                                         class="diskon-nilai w-3/4 rounded-l-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2 border">
-                                    <select name="items[0][diskon_tipe]" class="diskon-tipe w-1/4 rounded-r-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 border-l-0">
-                                        <option value="persen">%</option>
-                                        <option value="nominal">Rp</option>
+                                    <select name="items[{{ $index }}][diskon_tipe]" class="diskon-tipe w-1/4 rounded-r-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 border-l-0">
+                                        <option value="persen" {{ $item->diskon_tipe == 'persen' ? 'selected' : '' }}>%</option>
+                                        <option value="nominal" {{ $item->diskon_tipe == 'nominal' ? 'selected' : '' }}>Rp</option>
                                     </select>
                                 </div>
                             </div>
@@ -105,11 +109,11 @@
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">PPN</label>
                                 <div class="flex">
-                                    <input type="number" name="items[0][ppn_nilai]" min="0" value="0"
+                                    <input type="number" name="items[{{ $index }}][ppn_nilai]" min="0" value="{{ old('items.'.$index.'.ppn_nilai', $item->ppn_nilai) }}"
                                         class="ppn-nilai w-3/4 rounded-l-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2 border">
-                                    <select name="items[0][ppn_tipe]" class="ppn-tipe w-1/4 rounded-r-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 border-l-0">
-                                        <option value="persen">%</option>
-                                        <option value="nominal">Rp</option>
+                                    <select name="items[{{ $index }}][ppn_tipe]" class="ppn-tipe w-1/4 rounded-r-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 border-l-0">
+                                        <option value="persen" {{ $item->ppn_tipe == 'persen' ? 'selected' : '' }}>%</option>
+                                        <option value="nominal" {{ $item->ppn_tipe == 'nominal' ? 'selected' : '' }}>Rp</option>
                                     </select>
                                 </div>
                             </div>
@@ -119,7 +123,8 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Subtotal</label>
                                 <div class="relative">
                                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-600">Rp</span>
-                                    <input type="text" name="items[0][subtotal]" class="subtotal w-full rounded-md border-gray-300 bg-gray-100 p-2 pl-10 border" readonly>
+                                    <input type="text" name="items[{{ $index }}][subtotal]" class="subtotal w-full rounded-md border-gray-300 bg-gray-100 p-2 pl-10 border" readonly
+                                        value="{{ 'Rp ' . number_format($item->subtotal, 0, ',', '.') }}">
                                 </div>
                             </div>
 
@@ -133,6 +138,7 @@
                             </div>
                         </div>
                     </div>
+                    @endforeach
                 </div>
 
                 {{-- Tombol Tambah Barang --}}
@@ -151,11 +157,11 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Diskon Global</label>
                         <div class="flex">
-                            <input type="number" name="diskon_global_nilai" min="0" value="0"
+                            <input type="number" name="diskon_global_nilai" min="0" value="{{ old('diskon_global_nilai', $pemesanan->diskon_global_nilai) }}"
                                 class="diskon-global-nilai w-3/4 rounded-l-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2 border">
                             <select name="diskon_global_tipe" class="diskon-global-tipe w-1/4 rounded-r-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 border-l-0">
-                                <option value="persen">%</option>
-                                <option value="nominal">Rp</option>
+                                <option value="persen" {{ $pemesanan->diskon_global_tipe == 'persen' ? 'selected' : '' }}>%</option>
+                                <option value="nominal" {{ $pemesanan->diskon_global_tipe == 'nominal' ? 'selected' : '' }}>Rp</option>
                             </select>
                         </div>
                     </div>
@@ -164,11 +170,11 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">PPN Global</label>
                         <div class="flex">
-                            <input type="number" name="ppn_global_nilai" min="0" value="11"
+                            <input type="number" name="ppn_global_nilai" min="0" value="{{ old('ppn_global_nilai', $pemesanan->ppn_global_nilai) }}"
                                 class="ppn-global-nilai w-3/4 rounded-l-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2 border">
                             <select name="ppn_global_tipe" class="ppn-global-tipe w-1/4 rounded-r-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 border-l-0">
-                                <option value="persen" selected>%</option>
-                                <option value="nominal">Rp</option>
+                                <option value="persen" {{ $pemesanan->ppn_global_tipe == 'persen' ? 'selected' : '' }}>%</option>
+                                <option value="nominal" {{ $pemesanan->ppn_global_tipe == 'nominal' ? 'selected' : '' }}>Rp</option>
                             </select>
                         </div>
                     </div>
@@ -183,7 +189,7 @@
                             <i class="fas fa-calculator mr-2"></i> Total Pembayaran
                         </h4>
                     </div>
-                    <div class="text-2xl font-bold text-green-900" id="total-pembayaran">Rp 0</div>
+                    <div class="text-2xl font-bold text-green-900" id="total-pembayaran">Rp {{ number_format($pemesanan->total_pembayaran, 0, ',', '.') }}</div>
                 </div>
             </div>
 
@@ -195,7 +201,7 @@
                 </a>
                 <button type="submit"
                         class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 font-semibold transition">
-                    <i class="fas fa-save mr-1"></i> Simpan
+                    <i class="fas fa-save mr-1"></i> Simpan Perubahan
                 </button>
             </div>
         </form>
@@ -334,7 +340,7 @@
         }
 
         // Tambah baris barang
-        let itemIndex = 1;
+        let itemIndex = {{ count($details) }};
         $('#add-item').click(function() {
             const container = $('#items-container');
             const newItem = $('.item-container:first').clone();
@@ -345,6 +351,7 @@
             newItem.find('.harga-beli, .diskon-nilai, .ppn-nilai').val('0');
             newItem.find('.subtotal').val('Rp 0');
             newItem.find('.select-barang').val(null).trigger('change');
+            newItem.find('input[name*="[id]"]').remove(); // Hapus input id untuk item baru
 
             // Update nama atribut dengan index baru
             newItem.find('[name]').each(function() {
@@ -364,6 +371,12 @@
         // Hapus baris barang
         $(document).on('click', '.remove-item', function() {
             const itemContainer = $(this).closest('.item-container');
+            const itemId = itemContainer.find('input[name*="[id]"]').val();
+
+            if (itemId) {
+                // Jika item sudah ada di database, tambahkan input hidden untuk menandai penghapusan
+                itemContainer.append(`<input type="hidden" name="deleted_items[]" value="${itemId}">`);
+            }
 
             if ($('.item-container').length > 1) {
                 itemContainer.fadeOut(300, function() {

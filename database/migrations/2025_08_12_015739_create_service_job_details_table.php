@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('detail_services', function (Blueprint $table) {
+        Schema::create('service_job_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('service_id')->constrained('services')->onDelete('cascade');
-            $table->foreignId('barang_id')->constrained('barangs')->onDelete('restrict');
-            $table->integer('jumlah');
+            $table->foreignId('services_id')->constrained()->onDelete('cascade');
+            $table->foreignId('service_job_id')->constrained()->onDelete('cascade');
+            $table->integer('jumlah_jam')->nullable(); // diisi kalau tipe per_hour
             $table->decimal('harga_satuan', 12, 2);
             $table->decimal('subtotal', 12, 2);
             $table->timestamps();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('detail_services');
+        Schema::dropIfExists('service_job_details');
     }
 };

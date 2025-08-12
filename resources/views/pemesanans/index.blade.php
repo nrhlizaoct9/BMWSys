@@ -22,6 +22,7 @@
                     <th class="px-6 py-3 text-left">Supplier</th>
                     <th class="px-6 py-3 text-left">Tanggal Datang</th>
                     <th class="px-6 py-3 text-left">Total Barang</th>
+                    <th class="px-6 py-3 text-left">Total Pembayaran</th>
                     <th class="px-6 py-3 text-left">Aksi</th>
                 </tr>
             </thead>
@@ -37,14 +38,25 @@
                                 {{ $pemesanan->details->sum('quantity') }} item
                             </span>
                         </td>
+                        <td class="px-6 py-4">
+                            Rp {{ number_format($pemesanan->total_akhir, 0, ',', '.') }}
+                        </td>
                         <td class="px-6 py-4 space-x-2">
-                            <a href="{{ route('pemesanans.show', $pemesanan->id) }}" class="text-blue-600 hover:underline font-medium">
+                            <!-- Tombol Detail -->
+                            <a href="{{ route('pemesanans.show', $pemesanan->id) }}" class="text-green-600 hover:underline font-medium">
                                 <i class="fas fa-eye"></i> Detail
                             </a>
+
+                            <!-- Tombol Edit -->
+                            <a href="{{ route('pemesanans.edit', $pemesanan->id) }}" class="text-blue-600 hover:underline font-medium">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+
+                            <!-- Tombol Hapus -->
                             <form action="{{ route('pemesanans.destroy', $pemesanan->id) }}" method="POST" class="inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" onclick="return confirm('Yakin ingin menghapus data pemesanan ini?')" class="text-red-600 hover:underline font-medium">
+                                <button type="submit" onclick="return confirm('Yakin ingin menghapus pemesanan ini dan mengembalikan stok?')" class="text-red-600 hover:underline font-medium">
                                     <i class="fas fa-trash"></i> Hapus
                                 </button>
                             </form>
@@ -52,7 +64,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">Tidak ada data pemesanan</td>
+                        <td colspan="7" class="px-6 py-4 text-center text-gray-500">Tidak ada data pemesanan</td>
                     </tr>
                 @endforelse
             </tbody>
@@ -77,7 +89,7 @@
                 zeroRecords: "Tidak ditemukan data yang cocok",
             },
             // columnDefs: [
-            //     { orderable: false, targets: 5 } // Menonaktifkan sorting untuk kolom aksi
+            //     { orderable: false, targets: 6 } // Menonaktifkan sorting untuk kolom aksi
             // ]
         });
     });

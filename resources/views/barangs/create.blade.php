@@ -89,7 +89,7 @@
             {{-- Harga Beli --}}
             <div>
                 <label for="harga_beli" class="block text-sm font-medium text-gray-700">Harga Beli per satuan (Rp)</label>
-                <input type="text" name="harga_beli" id="harga_beli" value="{{ old('harga_beli') }}"
+                <input type="number" name="harga_beli" id="harga_beli" value="{{ old('harga_beli') }}"
                     class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"
                     required>
                 @error('harga_beli')

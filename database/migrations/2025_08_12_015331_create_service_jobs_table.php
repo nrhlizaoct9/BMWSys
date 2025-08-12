@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('services', function (Blueprint $table) {
+        Schema::create('service_jobs', function (Blueprint $table) {
             $table->id();
-            $table->date('tanggal');
-            $table->string('nama_pelanggan')->nullable();
-            $table->string('plat_nomor')->nullable();
-            $table->text('keterangan')->nullable();
-            $table->string('nomor_invoice')->unique();
-            $table->decimal('total', 12, 2)->default(0);
+            $table->string('nama_pekerjaan');
+            $table->string('estimasi_waktu')->nullable();
+            $table->enum('tipe_harga', ['fixed', 'per_hour'])->default('fixed');
+            $table->decimal('harga_jual', 12, 2);
+            $table->decimal('hpp_jasa', 12, 2)->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('services');
+        Schema::dropIfExists('service_jobs');
     }
 };

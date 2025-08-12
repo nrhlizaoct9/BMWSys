@@ -149,7 +149,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/alpinejs" defer></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
+    
     <!-- DataTables + TailwindCSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.tailwind.min.css">
 </head>
@@ -205,6 +205,7 @@
                         </div>
                     </div>
 
+                {{-- <a href="#" class="pb-2 border-b-2 {{ request()->is('pemesanan*') ? 'border-red-600 text-red-600 font-bold' : 'border-transparent hover:border-gray-300' }}"> --}}
                 <a href="{{ route('pemesanans.index') }}" class="pb-2 border-b-2 {{ request()->is('pemesanan*') ? 'border-red-600 text-red-600 font-bold' : 'border-transparent hover:border-gray-300' }}">
                     Pemesanan
                 </a>

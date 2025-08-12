@@ -8,29 +8,28 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Schema::create('transactions', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->foreignId('customer_id')->nullable()->constrained('customers')->nullOnDelete();
-        //     $table->foreignId('vehicle_id')->nullable()->constrained('vehicles')->nullOnDelete();
-        //     $table->foreignId('user_id')->constrained('users'); // petugas kasir/admin
-        //     $table->string('invoice_number')->unique();
-        //     $table->dateTime('transaction_date');
-        //     $table->decimal('total_amount', 12, 2);
-        //     $table->decimal('paid_amount', 12, 2);
-        //     $table->string('payment_method'); // contoh: cash, transfer
-        //     $table->enum('status', ['paid', 'unpaid', 'partial']);
-        //     $table->timestamps();
-        // });
-
         Schema::create('pemesanan_barangs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('supplier_id')->constrained();
-            $table->date('tanggal_datang'); // ganti dari 'tanggal'
-            $table->string('nomor_surat_jalan')->unique(); // ganti dari 'nomor_invoice'
-            $table->string('status')->default('arrived'); // hanya status arrived
-            $table->timestamps();
-        });
+            $table->foreignId('supplier_id')->constrained()->onDelete('cascade');
+            $table->date('tanggal_datang');
+            $table->string('nomor_surat_jalan')->unique();
+            $table->string('status')->default('arrived');
 
+            // Field diskon & PPN global
+            $table->decimal('diskon_global_nilai', 12, 2)->default(0);
+            $table->enum('diskon_global_tipe', ['persen', 'nominal'])->default('persen');
+            $table->decimal('ppn_global_nilai', 12, 2)->default(0);
+            $table->enum('ppn_global_tipe', ['persen', 'nominal'])->default('persen');
+
+            // Field total
+            $table->decimal('subtotal', 12, 2)->default(0); // total sebelum diskon & ppn
+            $table->decimal('total_diskon', 12, 2)->default(0);
+            $table->decimal('total_ppn', 12, 2)->default(0);
+            $table->decimal('total_akhir', 12, 2)->default(0);
+
+            $table->timestamps();
+            $table->softDeletes(); // optional untuk arsip data
+        });
     }
 
     public function down(): void
