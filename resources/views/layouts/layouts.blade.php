@@ -222,7 +222,17 @@
                         class="absolute bg-white text-black mt-2 rounded shadow-md w-48 z-50"
                     >
                         <a href="{{ route('service_jobs.index') }}" class="block px-4 py-2 hover:bg-gray-100">
+                            @if(request()->routeIs('service_jobs.*'))
+                                <span class="w-2 h-2 bg-red-600 rounded-full inline-block mr-2"></span>
+                            @endif
                             Pricelist Service
+                        </a>
+
+                        <a href="{{ route('services.index') }}" class="block px-4 py-2 hover:bg-gray-100">
+                            @if(request()->routeIs('services.*'))
+                                <span class="w-2 h-2 bg-red-600 rounded-full inline-block mr-2"></span>
+                            @endif
+                            Transaksi Service
                         </a>
                     </div>
                 </div>

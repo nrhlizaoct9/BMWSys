@@ -28,4 +28,7 @@ class Service extends Model
     {
         return $this->hasMany(ServiceJobDetail::class, 'service_id');
     }
+    protected $casts = [
+        'tanggal' => 'date', // or 'datetime' if you need time component
+    ];
 }
