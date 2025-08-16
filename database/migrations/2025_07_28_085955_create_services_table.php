@@ -19,6 +19,11 @@ return new class extends Migration
             $table->text('keterangan')->nullable();
             $table->string('nomor_invoice')->unique();
             $table->decimal('total', 12, 2)->default(0);
+            // Untuk ke menu keuangan
+            $table->enum('tipe_pembayaran', ['tunai', 'kredit'])->default('tunai');
+            $table->enum('status_pembayaran', ['lunas', 'belum_lunas'])->default('lunas');
+            // $table->date('tanggal_jatuh_tempo')->nullable(); // Jika kredit
+            $table->decimal('terbayar', 12, 2)->default(0);
             $table->timestamps();
         });
     }

@@ -46,6 +46,20 @@
                 @enderror
             </div>
 
+            {{-- Tipe Pembayaran --}}
+            <div class="mb-4">
+                <label>Tipe Pembayaran:</label>
+                <select name="tipe_pembayaran" required>
+                    <option value="tunai">Tunai</option>
+                    <option value="kredit">Kredit</option>
+                </select>
+            </div>
+
+            {{-- Tanggal Jatuh Tempo --}}
+            <div id="kredit-fields" style="display:none;">
+                <input type="date" name="tanggal_jatuh_tempo">
+            </div>
+
             {{-- Nama Pelanggan --}}
             <div>
                 <label for="nama_pelanggan" class="block text-sm font-medium text-gray-700">Nama Pelanggan</label>
@@ -359,38 +373,42 @@
         hitungTotal();
 
         // Form submission handler
-$('#serviceForm').on('submit', function(e) {
-    // Client-side validation
-    let isValid = true;
+        $('#serviceForm').on('submit', function(e) {
+            // Client-side validation
+            let isValid = true;
 
-    // Validate required fields
-    $('[required]').each(function() {
-        if (!$(this).val()) {
-            $(this).addClass('border-red-500');
+        // Validate required fields
+        $('[required]').each(function() {
+            if (!$(this).val()) {
+                $(this).addClass('border-red-500');
+                isValid = false;
+            } else {
+                $(this).removeClass('border-red-500');
+            }
+        });
+
+        // Validate at least one service job
+        if ($('.jasa-item').length === 0) {
+            alert('Harap tambahkan minimal satu jasa layanan');
             isValid = false;
-        } else {
-            $(this).removeClass('border-red-500');
         }
+
+        if (!isValid) {
+            e.preventDefault();
+            return false;
+        }
+
+        // Show loading state
+        $('#submitBtn').html('<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...');
+        $('#submitBtn').prop('disabled', true);
+
+        // Biarkan form submit normal
+        return true;
+
+        $('[name="tipe_pembayaran"]').change(function() {
+            $('#kredit-fields').toggle($(this).val() == 'kredit');
+        });
     });
 
-    // Validate at least one service job
-    if ($('.jasa-item').length === 0) {
-        alert('Harap tambahkan minimal satu jasa layanan');
-        isValid = false;
-    }
-
-    if (!isValid) {
-        e.preventDefault();
-        return false;
-    }
-
-    // Show loading state
-    $('#submitBtn').html('<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...');
-    $('#submitBtn').prop('disabled', true);
-
-    // Biarkan form submit normal
-    return true;
-    });
-    });
 </script>
 @endsection

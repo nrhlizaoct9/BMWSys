@@ -7,9 +7,12 @@ use App\Models\ServiceJob;
 use App\Models\Barang;
 use App\Models\DetailService;
 use App\Models\ServiceJobDetail;
+use App\Models\Keuangan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
@@ -49,72 +52,35 @@ class ServiceController extends Controller
                 'nama_pelanggan' => 'required|string|max:100',
                 'plat_nomor' => 'required|string|max:20',
                 'keterangan' => 'nullable|string',
-                'service_jobs' => 'required|array',
+                'tipe_pembayaran' => 'required|in:tunai,kredit',
+                'service_jobs' => 'required|array|min:1',
                 'service_jobs.*.id' => 'required|exists:service_jobs,id',
                 'service_jobs.*.jumlah_jam' => 'required|numeric|min:0.1',
                 'barangs' => 'nullable|array',
-                'barangs.*.id' => 'required|exists:barangs,id',
-                'barangs.*.jumlah' => 'required|integer|min:1',
+                'barangs.*.id' => 'required_with:barangs|exists:barangs,id',
+                'barangs.*.jumlah' => 'required_with:barangs|integer|min:1',
             ]);
 
-            // Create service header
             $service = Service::create([
                 'tanggal' => $validated['tanggal'],
                 'nama_pelanggan' => $validated['nama_pelanggan'],
                 'plat_nomor' => $validated['plat_nomor'],
                 'keterangan' => $validated['keterangan'] ?? null,
                 'nomor_invoice' => $this->generateInvoiceNumber(),
+                'tipe_pembayaran' => $validated['tipe_pembayaran'],
+                'status_pembayaran' => $validated['tipe_pembayaran'] == 'tunai' ? 'lunas' : 'belum_lunas',
                 'total' => 0,
             ]);
 
-            $total = 0;
-
-            // Add service jobs
-            foreach ($validated['service_jobs'] as $sj) {
-                $serviceJob = ServiceJob::findOrFail($sj['id']);
-
-                $subtotal = $serviceJob->tipe_harga == 'per_jam'
-                    ? $serviceJob->harga_jual * $sj['jumlah_jam']
-                    : $serviceJob->harga_jual;
-
-                ServiceJobDetail::create([
-                    'service_id' => $service->id,
-                    'service_job_id' => $sj['id'],
-                    'jumlah_jam' => $sj['jumlah_jam'],
-                    'harga_satuan' => $serviceJob->harga_jual,
-                    'subtotal' => $subtotal,
-                ]);
-
-                $total += $subtotal;
-            }
-
-            // Add barangs if any
-            if (!empty($validated['barangs'])) {
-                foreach ($validated['barangs'] as $brg) {
-                    $barang = Barang::findOrFail($brg['id']);
-
-                    // Validasi stok cukup
-                    if ($barang->stok < $brg['jumlah']) {
-                        throw new \Exception("Stok {$barang->nama_barang} tidak mencukupi");
-                    }
-
-                    $subtotal = $barang->harga_jual * $brg['jumlah'];
-
-                    DetailService::create([
-                        'service_id' => $service->id,
-                        'barang_id' => $brg['id'],
-                        'jumlah' => $brg['jumlah'],
-                        'harga_satuan' => $barang->harga_jual,
-                        'subtotal' => $subtotal,
-                    ]);
-
-                    $barang->decrement('stok', $brg['jumlah']);
-                    $total += $subtotal;
-                }
-            }
+            $total = $this->processServiceItems($service, $validated);
 
             // Update total
             $service->update(['total' => $total]);
+
+            // Catat transaksi keuangan jika tunai
+            if ($validated['tipe_pembayaran'] == 'tunai') {
+                $this->recordServicePayment($service, $validated['tanggal']);
+            }
 
             DB::commit();
 
@@ -126,6 +92,117 @@ class ServiceController extends Controller
             return back()->withInput()
                     ->with('error', 'Gagal membuat service: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Process payment for credit service
+     */
+    public function bayar(Request $request, Service $service)
+    {
+        $request->validate([
+            'jumlah' => 'required|numeric|min:1',
+            'tanggal_bayar' => 'required|date',
+            'metode_bayar' => 'required|string',
+        ]);
+
+        if ($service->tipe_pembayaran != 'kredit') {
+            return back()->with('error', 'Hanya service kredit yang bisa dibayar');
+        }
+
+        DB::beginTransaction();
+        try {
+            // Catat pembayaran di keuangan
+            Keuangan::create([
+                'kode_transaksi' => Keuangan::generateKodeTransaksi('pembayaran'),
+                'tipe' => 'pembayaran',
+                'kategori' => 'pelunasan_servis',
+                'jumlah' => $request->jumlah,
+                'tanggal' => $request->tanggal_bayar,
+                'referensi' => $service->nomor_invoice,
+                'user_id' => Auth::id(),
+            ]);
+
+            // Update status service
+            $terbayar = ($service->terbayar ?? 0) + $request->jumlah;
+            $service->update([
+                'terbayar' => $terbayar,
+                'status_pembayaran' => $terbayar >= $service->total ? 'lunas' : 'belum_lunas'
+            ]);
+
+            DB::commit();
+            return back()->with('success', 'Pembayaran berhasil dicatat');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Gagal: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Process service items and calculate total
+     */
+    protected function processServiceItems($service, $validated)
+    {
+        $total = 0;
+
+        // Process service jobs
+        foreach ($validated['service_jobs'] as $sj) {
+            $serviceJob = ServiceJob::findOrFail($sj['id']);
+            $subtotal = $serviceJob->tipe_harga == 'per_jam'
+                ? $serviceJob->harga_jual * $sj['jumlah_jam']
+                : $serviceJob->harga_jual;
+
+            ServiceJobDetail::create([
+                'service_id' => $service->id,
+                'service_job_id' => $sj['id'],
+                'jumlah_jam' => $sj['jumlah_jam'],
+                'harga_satuan' => $serviceJob->harga_jual,
+                'subtotal' => $subtotal,
+            ]);
+
+            $total += $subtotal;
+        }
+
+        // Process items if any
+        if (!empty($validated['barangs'])) {
+            foreach ($validated['barangs'] as $brg) {
+                $barang = Barang::findOrFail($brg['id']);
+
+                if ($barang->stok < $brg['jumlah']) {
+                    throw new \Exception("Stok {$barang->nama_barang} tidak mencukupi");
+                }
+
+                $subtotal = $barang->harga_jual * $brg['jumlah'];
+
+                DetailService::create([
+                    'service_id' => $service->id,
+                    'barang_id' => $brg['id'],
+                    'jumlah' => $brg['jumlah'],
+                    'harga_satuan' => $barang->harga_jual,
+                    'subtotal' => $subtotal,
+                ]);
+
+                $barang->decrement('stok', $brg['jumlah']);
+                $total += $subtotal;
+            }
+        }
+
+        return $total;
+    }
+
+    /**
+     * Record service payment in keuangan
+     */
+    protected function recordServicePayment($service, $tanggal)
+    {
+        Keuangan::create([
+            'kode_transaksi' => Keuangan::generateKodeTransaksi('pemasukan'),
+            'tipe' => 'pemasukan',
+            'kategori' => 'servis',
+            'jumlah' => $service->total,
+            'tanggal' => $tanggal,
+            'referensi' => $service->nomor_invoice,
+            'user_id' => Auth::id(),
+        ]);
     }
 
     /**

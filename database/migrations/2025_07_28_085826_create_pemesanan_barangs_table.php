@@ -13,7 +13,10 @@ return new class extends Migration
             $table->foreignId('supplier_id')->constrained()->onDelete('cascade');
             $table->date('tanggal_datang');
             $table->string('nomor_surat_jalan')->unique();
-            $table->string('status')->default('arrived');
+            $table->enum('tipe_pembayaran', ['tunai', 'kredit'])->default('tunai');
+            $table->date('tanggal_jatuh_tempo')->nullable();
+            $table->string('status_pembayaran')->default('belum_lunas');
+            $table->string('kode_transaksi_keuangan')->nullable()->unique();
 
             // Field diskon & PPN global
             $table->decimal('diskon_global_nilai', 12, 2)->default(0);
@@ -22,13 +25,13 @@ return new class extends Migration
             $table->enum('ppn_global_tipe', ['persen', 'nominal'])->default('persen');
 
             // Field total
-            $table->decimal('subtotal', 12, 2)->default(0); // total sebelum diskon & ppn
+            $table->decimal('subtotal', 12, 2)->default(0); // total per item
             $table->decimal('total_diskon', 12, 2)->default(0);
             $table->decimal('total_ppn', 12, 2)->default(0);
             $table->decimal('total_akhir', 12, 2)->default(0);
 
             $table->timestamps();
-            $table->softDeletes(); // optional untuk arsip data
+            $table->softDeletes(); // untuk arsip data
         });
     }
 

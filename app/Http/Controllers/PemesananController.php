@@ -7,12 +7,11 @@ use App\Models\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Supplier;
+use App\Models\Keuangan;
+use Illuminate\Support\Facades\Auth;
 
 class PemesananController extends Controller
 {
-    /**
-     * Menampilkan history barang masuk
-     */
     public function index()
     {
         $pemesanans = PemesananBarang::with(['supplier', 'details.barang'])
@@ -22,9 +21,6 @@ class PemesananController extends Controller
         return view('pemesanans.index', compact('pemesanans'));
     }
 
-    /**
-     * Form input barang datang
-     */
     public function create()
     {
         $suppliers = Supplier::all();
@@ -32,15 +28,14 @@ class PemesananController extends Controller
         return view('pemesanans.create', compact('suppliers', 'barangs'));
     }
 
-    /**
-     * Proses penyimpanan data barang datang
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
             'supplier_id' => 'required|exists:suppliers,id',
             'nomor_surat_jalan' => 'required|unique:pemesanan_barangs',
             'tanggal_datang' => 'required|date',
+            'tipe_pembayaran' => 'required|in:tunai,kredit',
+            'tanggal_jatuh_tempo' => 'required_if:tipe_pembayaran,kredit|nullable|date',
             'items' => 'required|array|min:1',
             'items.*.barang_id' => 'required|exists:barangs,id',
             'items.*.quantity' => 'required|integer|min:1',
@@ -61,7 +56,7 @@ class PemesananController extends Controller
                 'supplier_id' => $validated['supplier_id'],
                 'nomor_surat_jalan' => $validated['nomor_surat_jalan'],
                 'tanggal_datang' => $validated['tanggal_datang'],
-                'status' => 'arrived',
+                'tipe_pembayaran' => 'tunai',
                 'diskon_global_nilai' => $validated['diskon_global_nilai'] ?? 0,
                 'diskon_global_tipe' => $validated['diskon_global_tipe'] ?? 'persen',
                 'ppn_global_nilai' => $validated['ppn_global_nilai'] ?? 0,
@@ -138,6 +133,18 @@ class PemesananController extends Controller
                 'total_ppn' => $ppnGlobal,
                 'total_akhir' => $subtotal - $diskonGlobal + $ppnGlobal
             ]);
+
+            if ($validated['tipe_pembayaran'] == 'tunai') {
+                Keuangan::create([
+                    'kode_transaksi' => Keuangan::generateKodeTransaksi('pembayaran'),
+                    'tipe' => 'pembayaran',
+                    'jumlah' => $pemesanan->total_akhir,
+                    'keterangan' => 'Pembayaran lunas untuk pemesanan ' . $pemesanan->nomor_surat_jalan,
+                    'referensi' => $pemesanan->nomor_surat_jalan,
+                    'tanggal' => $pemesanan->tanggal_datang,
+                    'user_id' => Auth::id()
+                ]);
+            }
         });
 
         return redirect()->route('pemesanans.index')
@@ -273,6 +280,22 @@ class PemesananController extends Controller
                 'total_ppn' => $ppnGlobal,
                 'total_akhir' => $subtotal - $diskonGlobal + $ppnGlobal
             ]);
+        });
+
+        DB::transaction(function () use ($validated, $id) {  // Pastikan $id di-pass ke closure
+            $pemesanan = PemesananBarang::with('details')->findOrFail($id);
+
+            if ($validated['tipe_pembayaran'] == 'tunai') {
+                Keuangan::create([
+                    'kode_transaksi' => Keuangan::generateKodeTransaksi('pembayaran'),
+                    'tipe' => 'pembayaran',
+                    'jumlah' => $pemesanan->total_akhir,
+                    'keterangan' => 'Pembayaran lunas untuk pemesanan ' . $pemesanan->nomor_surat_jalan,
+                    'referensi' => $pemesanan->nomor_surat_jalan,
+                    'tanggal' => $pemesanan->tanggal_datang,
+                    'user_id' => Auth::id()
+                ]);
+            }
         });
 
         return redirect()->route('pemesanans.index')

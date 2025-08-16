@@ -125,7 +125,7 @@
                 <div class="flex items-center space-x-4">
                     <img src="{{ asset('img/bmw2.jpeg') }}" alt="Logo BMW" class="h-14">
                     <h2 class="text-lg font-semibold mb-2">
-                        <span class="font-bold text-red-500">BIMMERWORKS</span> FOR THE BMW ENTHUSIAST
+                        <span class="font-bold text-red-500">BimmerWorks</span> for the BMW enthusiast
                     </h2>
                 </div>
             </div>

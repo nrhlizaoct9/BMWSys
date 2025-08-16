@@ -236,24 +236,28 @@
                         </a>
                     </div>
                 </div>
+                <a href="{{ route('keuangan.index') }}" class="pb-2 border-b-2 {{ request()->is('keuangan*') ? 'border-red-600 text-red-600 font-bold' : 'border-transparent hover:border-gray-300' }}">
+                    Keuangan
+                </a>
                 <a href="#" class="pb-2 border-b-2 {{ request()->is('laporan*') ? 'border-red-600 text-red-600 font-bold' : 'border-transparent hover:border-gray-300' }}">
                     Laporan
                 </a>
                 <!-- Dropdown Profil -->
                 <div x-data="{ open: false }" class="relative">
-                    <!-- Tombol bulat (profil) -->
+                    <!-- Tombol profil -->
                     <button @click="open = !open" class="w-10 h-10 bg-white text-black font-bold rounded-full flex items-center justify-center focus:outline-none">
                         BW
                     </button>
 
                     <!-- Menu dropdown -->
-                    <div
-                        x-show="open"
-                        @click.away="open = false"
-                        x-transition
-                        class="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-md z-50"
-                    >
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
+                    <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-md z-50">
+                        <!-- Form Logout -->
+                        <form method="POST" action="{{ route('logout') }}" x-data>
+                            @csrf
+                            <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                            </button>
+                        </form>
                     </div>
                 </div>
             </nav>

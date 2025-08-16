@@ -52,18 +52,12 @@ class Barang extends Model
 
     public function getHargaBeliFormattedAttribute()
     {
-        if (is_null($this->harga_beli)) {
-            return '-';
-        }
-        return 'Rp ' . number_format($this->harga_beli, 2, ',', '.');
+        return 'Rp ' . number_format($this->harga_beli, 0, ',', '.');
     }
 
     public function getHargaJualFormattedAttribute()
     {
-        if (is_null($this->harga_jual)) {
-            return '-';
-        }
-        return 'Rp ' . number_format($this->harga_jual, 2, ',', '.');
+        return 'Rp ' . number_format($this->harga_jual, 0, ',', '.');
     }
 
     public function isStokRendah()

@@ -43,6 +43,24 @@
                         class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"
                         required>
                 </div>
+
+                {{-- Tipe Pembayaran --}}
+                <div>
+                    <label for="tipe_pembayaran" class="block text-sm font-medium text-gray-700">Tipe Pembayaran</label>
+                    <select name="tipe_pembayaran" id="tipe_pembayaran" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2" required>
+                        <option value="tunai" {{ $pemesanan->tipe_pembayaran == 'tunai' ? 'selected' : '' }}>Tunai</option>
+                        <option value="kredit" {{ $pemesanan->tipe_pembayaran == 'kredit' ? 'selected' : '' }}>Kredit</option>
+                    </select>
+                </div>
+
+                {{-- Jatuh Tempo --}}
+                <div id="tanggal-tempo-container" class="{{ $pemesanan->tipe_pembayaran == 'kredit' ? '' : 'hidden' }}">
+                    <label for="tanggal_jatuh_tempo" class="block text-sm font-medium text-gray-700">Tanggal Jatuh Tempo</label>
+                    <input type="date" name="tanggal_jatuh_tempo" id="tanggal_jatuh_tempo"
+                        value="{{ old('tanggal_jatuh_tempo', optional($pemesanan->tanggal_jatuh_tempo)->format('Y-m-d')) }}"
+                        class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"
+                        {{ $pemesanan->tipe_pembayaran == 'kredit' ? 'required' : '' }}>
+                </div>
             </div>
 
             <!-- 2. Daftar Barang -->
@@ -414,6 +432,16 @@
 
         // Hitung total awal
         calculateTotal();
+
+        $(document).on('change', '#tipe_pembayaran', function() {
+            if ($(this).val() === 'kredit') {
+                $('#tanggal-tempo-container').removeClass('hidden');
+                $('#tanggal_jatuh_tempo').prop('required', true);
+            } else {
+                $('#tanggal-tempo-container').addClass('hidden');
+                $('#tanggal_jatuh_tempo').prop('required', false);
+            }
+        });
     });
 </script>
 

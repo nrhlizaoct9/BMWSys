@@ -42,6 +42,22 @@
                         class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2"
                         required>
                 </div>
+
+                {{-- Tipe Pembayaran --}}
+                <div>
+                    <label for="tipe_pembayaran" class="block text-sm font-medium text-gray-700">Tipe Pembayaran</label>
+                    <select name="tipe_pembayaran" id="tipe_pembayaran" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2" required>
+                        <option value="tunai" selected>Tunai</option>
+                        <option value="kredit">Kredit</option>
+                    </select>
+                </div>
+
+                {{-- Jatuh Tempo --}}
+                <div id="tanggal-tempo-container" class="hidden">
+                    <label for="tanggal_jatuh_tempo" class="block text-sm font-medium text-gray-700">Tanggal Jatuh Tempo</label>
+                    <input type="date" name="tanggal_jatuh_tempo" id="tanggal_jatuh_tempo"
+                        class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 p-2">
+                </div>
             </div>
 
             <!-- 2. Daftar Barang -->
@@ -401,6 +417,17 @@
 
         // Hitung total awal
         calculateTotal();
+
+        // Tambahkan di bagian scripts
+        $(document).on('change', '#tipe_pembayaran', function() {
+            if ($(this).val() === 'kredit') {
+                $('#tanggal-tempo-container').removeClass('hidden');
+                $('#tanggal_jatuh_tempo').prop('required', true);
+            } else {
+                $('#tanggal-tempo-container').addClass('hidden');
+                $('#tanggal_jatuh_tempo').prop('required', false);
+            }
+        });
     });
 </script>
 

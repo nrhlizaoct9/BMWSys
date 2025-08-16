@@ -41,6 +41,7 @@
                         <th class="px-6 py-3 text-left">Pelanggan</th>
                         <th class="px-6 py-3 text-left">Plat Nomor</th>
                         <th class="px-6 py-3 text-left">Total</th>
+                        <th class="px-6 py-3 text-left">Status Bayar</th>
                         <th class="px-6 py-3 text-left">Aksi</th>
                     </tr>
                 </thead>
@@ -55,6 +56,15 @@
                         <td class="px-6 py-4">{{ $service->nama_pelanggan }}</td>
                         <td class="px-6 py-4 uppercase">{{ $service->plat_nomor }}</td>
                         <td class="px-6 py-4 font-bold">Rp {{ number_format($service->total, 0, ',', '.') }}</td>
+                        <td>
+                            @if($service->tipe_pembayaran == 'tunai')
+                                <span class="badge bg-green-100 text-green-800">Lunas</span>
+                            @else
+                                <span class="badge bg-yellow-100 text-yellow-800">
+                                    Kredit (Rp {{ number_format($service->total_terbayar, 0) }}/{{ number_format($service->total, 0) }})
+                                </span>
+                            @endif
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex space-x-2">
                                 <!-- View Button -->

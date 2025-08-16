@@ -20,7 +20,8 @@ class PemesananBarang extends Model
         'supplier_id',
         'tanggal_datang',
         'nomor_surat_jalan',
-        'status',
+        'tipe_pembayaran',
+        'tanggal_jatuh_tempo',
         'diskon_global_nilai',
         'diskon_global_tipe',
         'ppn_global_nilai',
@@ -32,7 +33,6 @@ class PemesananBarang extends Model
     ];
 
     protected $attributes = [
-        'status' => 'arrived',
         'diskon_global_nilai' => 0,
         'ppn_global_nilai' => 0,
         'subtotal' => 0,
@@ -41,7 +41,7 @@ class PemesananBarang extends Model
         'total_akhir' => 0
     ];
 
-    protected $dates = ['tanggal_datang'];
+    protected $dates = ['tanggal_datang', 'tanggal_jatuh_tempo'];
 
     protected $casts = [
         'tanggal_datang' => 'datetime:Y-m-d',
@@ -58,7 +58,6 @@ class PemesananBarang extends Model
         'formatted_total_akhir'
     ];
 
-    /* RELASI */
     public function supplier(): BelongsTo
     {
         return $this->belongsTo(Supplier::class);
@@ -66,10 +65,20 @@ class PemesananBarang extends Model
 
     public function details()
     {
-    return $this->hasMany(DetailPemesananBarang::class, 'pemesanan_barang_id');
+        return $this->hasMany(DetailPemesananBarang::class, 'pemesanan_barang_id');
     }
 
-    /* ACCESSORS */
+    public function cicilan()
+    {
+        return $this->hasMany(CicilanPembayaran::class, 'pemesanan_barang_id');
+    }
+
+    public function transaksiKeuangan()
+    {
+        return $this->hasMany(Keuangan::class, 'referensi', 'nomor_surat_jalan');
+    }
+
+    // Accessors
     public function getTotalItemsAttribute(): int
     {
         return $this->details->sum('quantity');
@@ -92,7 +101,6 @@ class PemesananBarang extends Model
         return $this->tanggal_datang?->format('d/m/Y');
     }
 
-    /* METHOD BISNIS */
     public static function generateNomorSuratJalan(): string
     {
         $prefix = 'SJ-' . date('Ymd') . '-';
@@ -130,7 +138,7 @@ class PemesananBarang extends Model
         $this->save();
     }
 
-    /* SCOPES */
+    // Scopes
     public function scopeFilterByTanggal($query, $startDate, $endDate)
     {
         return $query->whereBetween('tanggal_datang', [$startDate, $endDate]);
